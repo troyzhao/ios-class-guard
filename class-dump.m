@@ -31,6 +31,7 @@ void print_usage(void)
             "\n"
             "  where options are:\n"
             "        -F <class>        specify class filter for symbols obfuscator (also protocol))\n"
+            "        -Y <class>       include class, if specify this option, -F will be ignore\n"
             "        -i <symbol>       ignore obfuscation of specific symbol)\n"
             "        --arch <arch>     choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64, armv6, armv7, armv7s, arm64)\n"
             "        --list-arches     list the arches in the file, then exit\n"
@@ -75,6 +76,7 @@ int main(int argc, char *argv[])
         NSString *outputPath;
         NSMutableSet *hiddenSections = [NSMutableSet set];
         NSMutableArray *classFilter = [NSMutableArray new];
+        NSMutableArray *specifyClass = [NSMutableArray array];
         NSMutableArray *ignoreSymbols = [NSMutableArray new];
         NSString *xibBaseDirectory = nil;
         NSString *podsPath = nil;
@@ -132,7 +134,7 @@ int main(int argc, char *argv[])
         // classDump.maxRecursiveDepth = 1;
         // classDump.forceRecursiveAnalyze = @[@"Foundation"];
 
-        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:X:P:i:O:m:c:", longopts, NULL)) != -1) {
+        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:X:P:i:O:m:c:Y:", longopts, NULL)) != -1) {
             switch (ch) {
                 case CD_OPT_ARCH: {
                     NSString *name = [NSString stringWithUTF8String:optarg];
@@ -220,7 +222,9 @@ int main(int argc, char *argv[])
                 case 'F':
                     [classFilter addObject:[NSString stringWithUTF8String:optarg]];
                     break;
-
+                case 'Y':
+                    [specifyClass addObject:[NSString stringWithUTF8String:optarg]];
+                    break;
                 case 'X':
                     xibBaseDirectory = [NSString stringWithUTF8String:optarg];
                     break;
@@ -415,6 +419,7 @@ int main(int argc, char *argv[])
                         CDSymbolsGeneratorVisitor *visitor = [CDSymbolsGeneratorVisitor new];
                         visitor.classDump = classDump;
                         visitor.classFilter = classFilter;
+                        visitor.specifyClasses = specifyClass;
                         visitor.ignoreSymbols = ignoreSymbols;
                         visitor.symbolsFilePath = symbolsPath;
                         [classDump recursivelyVisit:visitor];
