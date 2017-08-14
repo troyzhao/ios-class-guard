@@ -441,14 +441,15 @@ static NSString *const lettersSet[maxLettersSet] = {
 }
 
 - (BOOL)shouldClassBeObfuscated:(NSString *)className {
-    for (NSString *spec in self.specifyClasses) {
-        if ([className isLike:spec]) {
-            return YES;
+    if (self.specifyClasses && self.specifyClasses.count) {
+        for (NSString *spec in self.specifyClasses) {
+            if ([className isLike:spec]) {
+                return YES;
+            }
         }
-        else {
-            return NO;
-        }
+        return NO;
     }
+    
     for (NSString *filter in self.classFilter) {
         if ([filter hasPrefix:@"!"]) {
             // negative filter - prefixed with !
