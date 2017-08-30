@@ -9,6 +9,7 @@
 #import "CDObjectiveCProcessor.h"
 #import "CDMachOFile.h"
 #import "CDType.h"
+#import "CDForbiddenWords.h"
 
 static const int maxLettersSet = 3;
 static NSString *const lettersSet[maxLettersSet] = {
@@ -74,8 +75,40 @@ static NSString *const lettersSet[maxLettersSet] = {
             @"init",
             @"alloc",
             @"_inline",
-            @"_Bool"
+            @"_Bool",
+//                                           @"retain",
+//                                           @"end",
+//                                           @"interface",
+//                                           @"implementation",
+//                                           @"class",
+//                                           @"self",
+//                                           @"count",
+//                                           @"length",
+//                                           @"objectForKeyedSubscript",
+//                                           @"objectAtIndexedSubscript",
+//                                           @"forKeyedSubscript",
+//                                           @"object",
+//                                           @"text",
+//                                           @"initWithNibName",
+//                                           @"bundle",
+//                                           @"viewDidLoad",
+//                                           @"viewDidAppear",
+//                                           @"viewDidDisappear",
+//                                           @"width",
+//                                           @"height",
+//                                           @"initWithFrame",
+//                                           @"offset",
+//                                           @"placeholder",
+//                                           @"title",
+//                                           @"dateFormat",
+//                                           @"lock",
     ]];
+    
+    NSArray *reservedKeys = [forbiddenWords componentsSeparatedByString:@","];
+    [_forbiddenNames addObjectsFromArray:reservedKeys];
+    
+    NSString *str = nil;
+    [str componentsSeparatedByString:@","];
 }
 
 - (void)willBeginVisiting {
